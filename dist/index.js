@@ -10,7 +10,13 @@ var server = new server_1.default();
 //Rutas de mi App
 server.app.use('/user', usuario_1.default);
 //Conectar DB
-mongoose_1.default.connect('mongodb://localhost:/27017/fotosgram');
+mongoose_1.default.connect('mongodb://localhost:27017/fotosgram', {
+    useNewUrlParser: true, useCreateIndex: true
+}, function (err) {
+    if (err)
+        throw err;
+    console.log('Base de datos ONLINE');
+});
 //Levantar express
 server.start(function () {
     console.log("Servidor corriendo en puerto " + server.port);
