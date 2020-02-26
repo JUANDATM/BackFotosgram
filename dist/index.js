@@ -6,7 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var server_1 = __importDefault(require("./classes/server"));
 var usuario_1 = __importDefault(require("./routes/usuario"));
 var mongoose_1 = __importDefault(require("mongoose"));
+var body_parser_1 = __importDefault(require("body-parser"));
 var server = new server_1.default();
+// Body Parser
+server.app.use(body_parser_1.default.urlencoded({ extended: true }));
+server.app.use(body_parser_1.default.json());
 //Rutas de mi App
 server.app.use('/user', usuario_1.default);
 //Conectar DB
