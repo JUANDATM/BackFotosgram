@@ -75,6 +75,7 @@ postRoutes.get('/', function (req, res) { return __awaiter(void 0, void 0, void 
 postRoutes.post('/', [autenticacion_1.verificaToken], function (req, res) {
     var body = req.body;
     body.usuario = req.usuario._id;
+    var imagenes = [];
     post_model_1.Post.create(body).then(function (postDB) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -93,30 +94,39 @@ postRoutes.post('/', [autenticacion_1.verificaToken], function (req, res) {
     });
 });
 //Servicio para subir archivos
-postRoutes.post('/upload', [autenticacion_1.verificaToken], function (req, res) {
-    if (!req.files) {
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'No se subió ningun archivo '
-        });
-    }
-    var file = req.files.image;
-    if (!file) {
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'No se subió ningun archivo -image'
-        });
-    }
-    if (!file.mimetype.includes('image')) {
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'Lo que sibio no es una imagen '
-        });
-    }
-    fileSystem.guardarImagenTemporal(file, req.usuario._id);
-    res.json({
-        ok: false,
-        file: file.mimetype
+postRoutes.post('/upload', [autenticacion_1.verificaToken], function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var file;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.files) {
+                    return [2 /*return*/, res.status(400).json({
+                            ok: false,
+                            mensaje: 'No se subió ningun archivo '
+                        })];
+                }
+                file = req.files.image;
+                if (!file) {
+                    return [2 /*return*/, res.status(400).json({
+                            ok: false,
+                            mensaje: 'No se subió ningun archivo -image'
+                        })];
+                }
+                if (!file.mimetype.includes('image')) {
+                    return [2 /*return*/, res.status(400).json({
+                            ok: false,
+                            mensaje: 'Lo que sibio no es una imagen '
+                        })];
+                }
+                return [4 /*yield*/, fileSystem.guardarImagenTemporal(file, req.usuario._id)];
+            case 1:
+                _a.sent();
+                res.json({
+                    ok: false,
+                    file: file.mimetype
+                });
+                return [2 /*return*/];
+        }
     });
-});
+}); });
 exports.default = postRoutes;

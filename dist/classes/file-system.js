@@ -5,11 +5,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = __importDefault(require("path"));
 var fs_1 = __importDefault(require("fs"));
+var uniqid_1 = __importDefault(require("uniqid"));
 var FileSystem = /** @class */ (function () {
     function FileSystem() {
     }
     FileSystem.prototype.guardarImagenTemporal = function (file, userId) {
-        var path = this.crearCarpetaUsuario(userId);
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var path = _this.crearCarpetaUsuario(userId);
+            var nombreArchivo = _this.generarNombreUnico(file.name);
+            //Movero el archivo del temp a nuestra carpeta
+            file.mv(path + "/" + nombreArchivo, function (err) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    };
+    FileSystem.prototype.generarNombreUnico = function (nombreOriginal) {
+        var nombreArr = nombreOriginal.split('.');
+        var extension = nombreArr[nombreArr.length - 1];
+        var idUnico = uniqid_1.default();
+        return idUnico + "." + extension;
     };
     FileSystem.prototype.crearCarpetaUsuario = function (userId) {
         var pathUser = path_1.default.resolve(__dirname, '../uploads', userId);
@@ -20,6 +40,25 @@ var FileSystem = /** @class */ (function () {
             fs_1.default.mkdirSync(pathUserTemp);
         }
         return pathUserTemp;
+    };
+    FileSystem.prototype.imagenesDeTempHaciaPost = function (userId) {
+        var pathTemp = path_1.default.resolve(__dirname, '../uploads', userId, 'temp');
+        var pathPost = path_1.default.resolve(__dirname, '../uploads', userId, 'posts');
+        if (!fs_1.default.existsSync(pathTemp)) {
+            return [];
+        }
+        if (!fs_1.default.existsSync(pathPost)) {
+            fs_1.default.mkdirSync(pathPost);
+        }
+        var imagenesTemp = this.obtenerImagenesTemp(userId);
+        imagenesTemp.forEach(function (imagen) {
+            fs_1.default.renameSync(pathTemp + "/" + imagen, pathPost + "/" + imagen);
+        });
+        return imagenesTemp;
+    };
+    FileSystem.prototype.obtenerImagenesTemp = function (userId) {
+        var pathTemp = path_1.default.resolve(__dirname, '../uploads', userId, 'temp');
+        return fs_1.default.readdirSync(pathTemp) || [];
     };
     return FileSystem;
 }());
