@@ -4,8 +4,6 @@ import bcrypt from 'bcrypt';
 import Token from '../classes/token';
 import { verificaToken } from '../middlewares/autenticacion';
 
-
-
 const userRoutes = Router();
 
 
@@ -44,9 +42,6 @@ userRoutes.post('/login', (req: Request, res: Response)=>{
     })
 
 });
-
-
-
 
 // CREAR UN USUARIO
 userRoutes.post('/create', (req: Request, res: Response)=>{
@@ -111,6 +106,14 @@ userRoutes.post('/update', verificaToken ,(req: any, res: Response)=>{
     });
 });
 
+
+userRoutes.get('/',[verificaToken], (req:any, res:Response)=>{
+    const usuario = req.usuario;
+    res.json({
+        ok: true,
+        usuario
+    })
+});
 
 
 export default userRoutes;

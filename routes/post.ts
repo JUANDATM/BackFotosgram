@@ -3,6 +3,7 @@ import { verificaToken } from '../middlewares/autenticacion';
 import { Post } from '../models/post.model';
 import { FileUpload } from '../interfaces/file-upload';
 import FileSystem from '../classes/file-system';
+import bodyParser from "body-parser";
 
 const postRoutes = Router();
 const fileSystem = new FileSystem();
@@ -34,7 +35,8 @@ postRoutes.post('/', [verificaToken], (req:any, res: Response)=>{
         const body = req.body;
         body.usuario = req.usuario._id;
 
-        const imagenes = [];
+        const imagenes = fileSystem.imagenesDeTempHaciaPost(req.usuario._id);
+        body.imgs = imagenes
 
         Post.create(body).then(async postDB =>{
 
@@ -82,6 +84,17 @@ postRoutes.post('/upload', [verificaToken], async (req: any, res: Response) =>{
         file: file.mimetype
     });
 
+});
+
+
+
+postRoutes.get('/imagen/:userid/:img', (req:any, res:Response)=>{
+    const userId = req.params.userid;
+    const img = req.params.img;
+
+    const pathFoto = fileSystem.getFotoUrl(userId, img);
+
+    res.sendFile(pathFoto);
 });
 
 export default postRoutes;
