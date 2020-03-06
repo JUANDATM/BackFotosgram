@@ -2,12 +2,13 @@ import Server from './classes/server';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
-
-
+import cors from 'cors';
 
 
 import userRoutes from './routes/usuario';
 import postRoutes from './routes/post';
+
+
  
 const server = new Server();
 
@@ -17,8 +18,10 @@ server.app.use(bodyParser.urlencoded({extended:true}));
 server.app.use(bodyParser.json());
 
 //FileUpload
+server.app.use(fileUpload());
 
-server.app.use(fileUpload())
+//Configurar Cors
+server.app.use(cors({origin: true, credentials:true}));
 
 
 //Rutas de mi App

@@ -7,6 +7,7 @@ var server_1 = __importDefault(require("./classes/server"));
 var mongoose_1 = __importDefault(require("mongoose"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var express_fileupload_1 = __importDefault(require("express-fileupload"));
+var cors_1 = __importDefault(require("cors"));
 var usuario_1 = __importDefault(require("./routes/usuario"));
 var post_1 = __importDefault(require("./routes/post"));
 var server = new server_1.default();
@@ -15,6 +16,8 @@ server.app.use(body_parser_1.default.urlencoded({ extended: true }));
 server.app.use(body_parser_1.default.json());
 //FileUpload
 server.app.use(express_fileupload_1.default());
+//Configurar Cors
+server.app.use(cors_1.default({ origin: true, credentials: true }));
 //Rutas de mi App
 server.app.use('/user', usuario_1.default);
 server.app.use('/posts', post_1.default);

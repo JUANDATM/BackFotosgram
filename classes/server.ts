@@ -11,8 +11,8 @@ export default class Server {
         this.app = express();
     }
  
-    start(callback: () => void) {
-        this.app.listen( this.port, callback );
+    start( callback: Function ) {
+        this.app.listen(  this.port, callback() );
     }
  
 }
